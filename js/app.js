@@ -1,6 +1,7 @@
 //hacer peticion a la api con fetch
 fetch('https://swapi.co/api/films/').then(function(response) {
         //console.log(response)
+        
         return response.json(); //convertir a json el resultado de la peticion
     })
     .then(function(data) { //una vez obteniendo respuesta, acceder a su data
@@ -13,57 +14,44 @@ fetch('https://swapi.co/api/films/').then(function(response) {
     });
 
 //funcion para pintar los elementos
-const paintFilms = (title, episode, people) => {
-    let cardGroup = document.createElement("div");
-    let card = document.createElement("div");
-    let imgCard = document.createElement("img");
-    let cardBody = document.createElement("div");
-    let cardTitle = document.createElement("h5");
-    let cardEpisode = document.createElement("p");
-    let cardPeople = document.createElement("a");
+const paintFilms = (title, episode, people, indexImage) => {
 
-    cardGroup.className = "card-group col-md-4";
-    card.className = "card";
-    imgCard.className = "card-img-top";
-    imgCard.setAttribute("src", "https://dummyimage.com/400x300/000/fff");
-    cardBody.className = "card-body";
-    cardTitle.className = "card-title";
-    cardTitle.innerText = title;
-    cardEpisode.className = "card-episode";
-    cardEpisode.innerText = episode;
-    cardPeople.className = "card-people";
-    cardPeople.setAttribute("href", "#modal");
-    cardPeople.setAttribute("data-toggle", "modal");
-    cardPeople.innerText = people;
+    let template = `<div class="card-group col-md-4">
+       <div class="card">
+           <img class="card-img-top" src=${indexImage} alt="Card image cap">
+           <div class="card-body">
+               <h5 class="card-title">${title}</h5>
+               <p class="card-text">${episode}</p>
+               <a class="card-people" href="#modal" data-toggle="modal"><ul>
+                   <li></li>
+               </ul></a>
+           </div>
+       </div>
+   </div>`
 
-    card.appendChild(imgCard);
-    cardBody.appendChild(cardTitle);
-    cardBody.appendChild(cardEpisode);
-    cardBody.appendChild(cardPeople);
-    card.appendChild(cardBody);
-    cardGroup.appendChild(card);
-
-    let sectionFilms = document.getElementById("section-films");
-    sectionFilms.appendChild(cardGroup);
+   let sectionFilms = document.getElementById("section-films");
+    sectionFilms.innerHTML += template;
 
 };
 
 //funcion para acceder a los datos que se requieren de la data extraida
 const films = (dataFilms) => {
-    dataFilms.forEach(function(element) {
+    dataFilms.forEach(function(element, index) {
+        let imagesArray = ["./assets/images/a-new-hope.jpg", "./assets/images/attack-of-the-clones.jpg", "./assets/images/the-phantom-menace.jpg", "./assets/images/revenge-of-the-sith.jpg", "./assets/images/return-of-the-jedi.jpg", "./assets/images/the-empire-strikes-back.jpg", "./assets/images/the-force-awakens.jpg"]
+        let indexImage = imagesArray[index];
+        //console.log(indexImage);
         let title = element.title;
         //console.log(title)
         let episode = element.episode_id;
         //console.log(episode)
         let people = element.characters;
         //console.log(people)
-        people.forEach(function(index) {
-            //console.log(index)
-            // var arrayPeople = [];
-            // arrayPeople += index;
-            // console.log(arrayPeople)
-            fetch(index).then(function(response) { //peticion del resultado de la iteracion de people, para acceder a su informacion
-                    console.log(response, "personaje")
+        people.forEach(function(elemento) {
+            let templatePeople = ``;
+            templatePeople += `<li>${elemento}</li>`
+            //console.log(elemento)
+            fetch(elemento).then(function(response) { //peticion del resultado de la iteracion de people, para acceder a su informacion
+                    //console.log(response, "personaje")
                     return response.json();
                 })
                 .then(function(data) {
@@ -72,15 +60,14 @@ const films = (dataFilms) => {
                     let mass = data.mass;
                     let hairColor = data.hair_color;
                     let skinColor = data.skin_color;
-                    console.log(name, height, mass, hairColor, skinColor);
+                    //console.log(name, height, mass, hairColor, skinColor);
                     modal(name, height, mass, hairColor, skinColor);
                 })
                 .catch(function(error) {
                     console.log('There has been a problem with your fetch operation: ' + error.message);
                 });
-
         });
-        paintFilms(title, episode, people)
+        paintFilms(title, episode, people, indexImage)
     });
 };
 
