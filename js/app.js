@@ -14,7 +14,7 @@ fetch('https://swapi.co/api/films/').then(function(response) {
     });
 
 //funcion para pintar los elementos
-const paintFilms = (title, episode, people, indexImage) => {
+const paintFilms = (title, episode, people, indexImage, templatePeople) => {
 
     let template = `<div class="card-group col-md-4">
        <div class="card">
@@ -22,9 +22,7 @@ const paintFilms = (title, episode, people, indexImage) => {
            <div class="card-body">
                <h5 class="card-title">${title}</h5>
                <p class="card-text">${episode}</p>
-               <a class="card-people" href="#modal" data-toggle="modal"><ul>
-                   <li></li>
-               </ul></a>
+               <ul>${templatePeople}</ul>
            </div>
        </div>
    </div>`
@@ -46,9 +44,10 @@ const films = (dataFilms) => {
         //console.log(episode)
         let people = element.characters;
         //console.log(people)
+        let templatePeople = ``;
         people.forEach(function(elemento) {
-            let templatePeople = ``;
-            templatePeople += `<li>${elemento}</li>`
+            
+            templatePeople += `<a class="card-people" href="#modal" data-toggle="modal"><li>${elemento}</li></a>`
             //console.log(elemento)
             fetch(elemento).then(function(response) { //peticion del resultado de la iteracion de people, para acceder a su informacion
                     //console.log(response, "personaje")
@@ -67,7 +66,7 @@ const films = (dataFilms) => {
                     console.log('There has been a problem with your fetch operation: ' + error.message);
                 });
         });
-        paintFilms(title, episode, people, indexImage)
+        paintFilms(title, episode, people, indexImage, templatePeople)
     });
 };
 
