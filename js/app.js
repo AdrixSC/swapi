@@ -1,16 +1,18 @@
+//hacer peticion a la api con fetch
 fetch('https://swapi.co/api/films/').then(function(response) {
         //console.log(response)
-        return response.json();
+        return response.json(); //convertir a json el resultado de la peticion
     })
-    .then(function(data) {
+    .then(function(data) { //una vez obteniendo respuesta, acceder a su data
         let dataFilms = data.results
             //console.log(dataFilms);
         films(dataFilms);
     })
-    // .catch(function(error) {
-    //     console.log('There has been a problem with your fetch operation: ' + error.message);
-    // });
+    .catch(function(error) { //mensaje en caso de no tener exito en la peticion
+        console.log('There has been a problem with your fetch operation: ' + error.message);
+    });
 
+//funcion para pintar los elementos
 const paintFilms = (title, episode, people) => {
     let cardGroup = document.createElement("div");
     let card = document.createElement("div");
@@ -46,6 +48,7 @@ const paintFilms = (title, episode, people) => {
 
 };
 
+//funcion para acceder a los datos que se requieren de la data extraida
 const films = (dataFilms) => {
     dataFilms.forEach(function(element) {
         let title = element.title;
@@ -59,7 +62,7 @@ const films = (dataFilms) => {
             // var arrayPeople = [];
             // arrayPeople += index;
             // console.log(arrayPeople)
-            fetch(index).then(function(response) {
+            fetch(index).then(function(response) { //peticion del resultado de la iteracion de people, para acceder a su informacion
                     console.log(response, "personaje")
                     return response.json();
                 })
@@ -70,7 +73,7 @@ const films = (dataFilms) => {
                     let hairColor = data.hair_color;
                     let skinColor = data.skin_color;
                     console.log(name, height, mass, hairColor, skinColor);
-                    //films(dataFilms);
+                    modal(name, height, mass, hairColor, skinColor);
                 })
                 .catch(function(error) {
                     console.log('There has been a problem with your fetch operation: ' + error.message);
@@ -79,4 +82,20 @@ const films = (dataFilms) => {
         });
         paintFilms(title, episode, people)
     });
+};
+
+
+//funcion para agregarles valores a los elementos html del modal
+const modal = (name, height, mass, hairColor, skinColor) => {
+    let titleModal = document.getElementById("modal-title");
+    let containerHeight = document.getElementById("height");
+    let containerMass = document.getElementById("mass");
+    let containerHairColor = document.getElementById("hair-color");
+    let contianerSkinColor = document.getElementById("skin-color");
+
+    titleModal.innerText = name;
+    containerHeight.innerText = height;
+    containerMass.innerHTML = mass;
+    containerHairColor.innerText = hairColor;
+    contianerSkinColor.innerText = skinColor;
 };
