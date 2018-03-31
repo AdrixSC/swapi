@@ -1,7 +1,7 @@
 //hacer peticion a la api con fetch
 fetch('https://swapi.co/api/films/').then(function(response) {
         //console.log(response)
-        
+
         return response.json(); //convertir a json el resultado de la peticion
     })
     .then(function(data) { //una vez obteniendo respuesta, acceder a su data
@@ -27,7 +27,7 @@ const paintFilms = (title, episode, people, indexImage, templatePeople) => {
        </div>
    </div>`
 
-   let sectionFilms = document.getElementById("section-films");
+    let sectionFilms = document.getElementById("row");
     sectionFilms.innerHTML += template;
 
 };
@@ -46,9 +46,9 @@ const films = (dataFilms) => {
         //console.log(people)
         let templatePeople = ``;
         people.forEach(function(elemento) {
-            
+
             templatePeople += `<a class="card-people" href="#modal" data-toggle="modal"><li>${elemento}</li></a>`
-            //console.log(elemento)
+                //console.log(elemento)
             fetch(elemento).then(function(response) { //peticion del resultado de la iteracion de people, para acceder a su informacion
                     //console.log(response, "personaje")
                     return response.json();
