@@ -37,16 +37,12 @@ const films = (dataFilms) => {
     dataFilms.forEach(function(element, index) {
         let imagesArray = ["./assets/images/a-new-hope.jpg", "./assets/images/attack-of-the-clones.jpg", "./assets/images/the-phantom-menace.jpg", "./assets/images/revenge-of-the-sith.jpg", "./assets/images/return-of-the-jedi.jpg", "./assets/images/the-empire-strikes-back.jpg", "./assets/images/the-force-awakens.jpg"]
         let indexImage = imagesArray[index];
-        //console.log(indexImage);
         let title = element.title;
-        //console.log(title)
         let episode = element.episode_id;
-        //console.log(episode)
         let people = element.characters;
-        //console.log(people)
+
         let templatePeople = ``;
         people.forEach(function(elemento) {
-
             templatePeople += `<a class="card-people" href="#modal" data-toggle="modal"><li>${elemento}</li></a>`
                 //console.log(elemento)
             fetch(elemento).then(function(response) { //peticion del resultado de la iteracion de people, para acceder a su informacion
@@ -60,7 +56,7 @@ const films = (dataFilms) => {
                     let hairColor = data.hair_color;
                     let skinColor = data.skin_color;
                     //console.log(name, height, mass, hairColor, skinColor);
-                    modal(name, height, mass, hairColor, skinColor);
+                    //modal(name, height, mass, hairColor, skinColor);
                 })
                 .catch(function(error) {
                     console.log('There has been a problem with your fetch operation: ' + error.message);
@@ -70,18 +66,51 @@ const films = (dataFilms) => {
     });
 };
 
+const showModal = () => {
+    let characterToShow = $(this).data("modal-title");
+    charactersRequest(characterToShow);
+    console.log(this)
+};
+
+$(document).on("click", ".card-people", showModal);
+
+const charactersRequest = (characterToShow) => {
+    fetch(`${characterToShow}`, { answer: 5 }).then(function(response) {
+        return response.json().then(function(dataPeople) {
+            console.log(dataPeople)
+            modalInfo(dataPeople)
+        })
+    });
+};
+
+const modalInfo = (dataPeople) => {
+    //console.log(dataPeople)
+    const name = dataPeople.name;
+    const height = dataPeople.height;
+    const hairColor = dataPeople.hair_color;
+    const mass = dataPeople.mass;
+    const skinColor = dataPeople.skin_color;
+    console.log(name, height, hairColor, mass, skinColor)
+
+    modal(name, height, mass, hairColor, skinColor)
+};
 
 //funcion para agregarles valores a los elementos html del modal
 const modal = (name, height, mass, hairColor, skinColor) => {
-    let titleModal = document.getElementById("modal-title");
-    let containerHeight = document.getElementById("height");
-    let containerMass = document.getElementById("mass");
-    let containerHairColor = document.getElementById("hair-color");
-    let contianerSkinColor = document.getElementById("skin-color");
+    const modalTemplate = `<div class="modal-header">
+                            <h5  id="modal-title">${name}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="height">${height}</p>
+                            <p id="mass">${mass}</p>
+                            <p id="hair-color">${hairColor}</p>
+                            <p id="skin-color">${skinColor}</p>
+                        </div>`;
 
-    titleModal.innerText = name;
-    containerHeight.innerText = height;
-    containerMass.innerHTML = mass;
-    containerHairColor.innerText = hairColor;
-    contianerSkinColor.innerText = skinColor;
+    const modalContainer = document.getElementById('modal-content');
+    modalContainer.innerHTML = modalTemplate
+
 };
