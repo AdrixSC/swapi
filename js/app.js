@@ -1,7 +1,6 @@
 //hacer peticion a la api con fetch
 fetch('https://swapi.co/api/films/').then(function(response) {
         //console.log(response)
-
         return response.json(); //convertir a json el resultado de la peticion
     })
     .then(function(data) { //una vez obteniendo respuesta, acceder a su data
@@ -44,60 +43,46 @@ const films = (dataFilms) => {
 
         let templatePeople = ``;
         people.forEach(function(elemento) {
-            templatePeople += `<a class="card-people" href="#modal" data-toggle="modal"><li>${elemento}</li></a>`
-            console.log(elemento)
-                //console.log(elemento)
-            fetch(elemento).then(function(response) { //peticion del resultado de la iteracion de people, para acceder a su informacion
-                    console.log(response, "personaje")
-                    return response.json();
-                })
-                .then(function(data) {
-                    //console.log(data)
-                    let name = data.name;
-                    let height = data.height;
-                    let mass = data.mass;
-                    let hairColor = data.hair_color;
-                    let skinColor = data.skin_color;
-                    //console.log(name, height, mass, hairColor, skinColor);
-                    modal(name, height, mass, hairColor, skinColor);
-                })
-                .catch(function(error) {
-                    console.log('There has been a problem with your fetch operation: ' + error.message);
-                });
+            templatePeople += `<a id="card-people" class="card-people" href="#modal" data-toggle="modal"><li>${elemento}</li></a>`
+            //console.log(elemento)
+            //console.log(people)
         });
-        paintFilms(title, episode, people, indexImage, templatePeople)
+        paintFilms(title, episode, people, indexImage, templatePeople);
+    });
+    let linksHTML = document.getElementsByClassName("card-people");//traer coleccion HTML
+    //console.log(link)
+    let linksUrl = Array.from(linksHTML);//convertir la colección HTML en un array
+    //console.log(links)
+    linksUrl.forEach(function(item){ //iterar el array para asignarle evento a cada url
+        item.addEventListener("click", requestModal)
+    });
+
+};
+
+//funcion para hacer la petición de los datos de cada personaje de cada url
+const requestModal = (event) => {
+let url= event.target.innerText //guardar el texto de cada url accediendo a su event target para asignarle el modal correspondiente a cada uno
+    fetch(url).then(function(response) { //peticion del resultado de la iteracion de url, para acceder a su informacion
+        //console.log(response, "personaje")
+        return response.json();
+    })
+    .then(function(data) {
+        //console.log(data)
+        let name = data.name;
+        let height = data.height;
+        let mass = data.mass;
+        let hairColor = data.hair_color;
+        let skinColor = data.skin_color;
+        paintModal(name, height, mass, hairColor, skinColor);
+    })
+    .catch(function(error) {
+        console.log('There has been a problem with your fetch operation: ' + error.message);
     });
 };
 
-// const showModal = () => {
-//     let characterToShow = this.data("modal-title");
-//     charactersRequest(characterToShow);
-//     console.log(this)
-// };
-
-// const charactersRequest = (characterToShow) => {
-//     fetch(`{characterToShow}`, { answer: 5 }).then(function(response) {
-//         return response.json().then(function(dataPeople) {
-//             console.log(dataPeople)
-//             modalInfo(dataPeople)
-//         })
-//     });
-// };
-
-// const modalInfo = (dataPeople) => {
-//     //console.log(dataPeople)
-//     const name = dataPeople.name;
-//     const height = dataPeople.height;
-//     const hairColor = dataPeople.hair_color;
-//     const mass = dataPeople.mass;
-//     const skinColor = dataPeople.skin_color;
-//     console.log(name, height, hairColor, mass, skinColor)
-
-//     modal(name, height, mass, hairColor, skinColor)
-// };
-
 //funcion para agregarles valores a los elementos html del modal
-const modal = (name, height, mass, hairColor, skinColor) => {
+const paintModal = (name, height, mass, hairColor, skinColor) => {
+    //console.log(name)
     const modalTemplate = `<div class="modal-header">
                             <h5  id="modal-title">${name}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -105,10 +90,10 @@ const modal = (name, height, mass, hairColor, skinColor) => {
         </button>
                         </div>
                         <div class="modal-body">
-                            <p id="height">${height}</p>
-                            <p id="mass">${mass}</p>
-                            <p id="hair-color">${hairColor}</p>
-                            <p id="skin-color">${skinColor}</p>
+                            <p id="height">Height: ${height}</p>
+                            <p id="mass">Mass: ${mass}</p>
+                            <p id="hair-color">Hair Color: ${hairColor}</p>
+                            <p id="skin-color">Skin Color: ${skinColor}</p>
                         </div>`;
 
     const modalContainer = document.getElementById('modal-content');
