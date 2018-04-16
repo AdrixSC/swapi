@@ -1,4 +1,4 @@
-## SWAPI
+# SWAPI
 
 Descripción: Consumir API de Star Wars, y mostrar los personajes de cada una con un modal
 
